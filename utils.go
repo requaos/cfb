@@ -35,6 +35,17 @@ func NewFile(filename string) (f *File, err error) {
 	return
 }
 
+func NewFileFromBytes(b []byte) (f *File, err error) {
+	if len(b) >MaxInt {
+		return nil, ErrTooLarge
+	}
+
+	return &File{
+		off:0,
+		buf: b,
+	}, nil
+}
+
 func (f *File)Size() int {
 	return len(f.buf)
 }
@@ -60,25 +71,24 @@ func (f *File)Open(filename string) (err error) {
 
 	if info, err = os.Stat(filename); err != nil {
 		f = nil
-		return
+		return err
 	}
 
 	if info.Size() > int64(MaxInt) {
 		f = nil
-		err = ErrTooLarge
-		return
+		return ErrTooLarge
 	}
 
 	if f.buf == nil {
 		if f.buf, err = makeSlice(int(info.Size())); err != nil {
-			return
+			return err
 		}
 	}
 
 	if _, err = io.ReadFull(file, f.buf); err != nil {
-		return
+		return err
 	}
-	return
+	return nil
 }
 
 func (f *File)ReadBytes(size int) ([]byte, error) {
@@ -99,7 +109,7 @@ func (f *File) Read(b []byte) (n int, err error) {
 	}
 	n = copy(b, f.buf[f.off:])
 	f.off += n
-	return
+	return n, nil
 }
 
 func (f *File) Seek(offset int, whence int) (int, error) {
@@ -125,13 +135,13 @@ func (f *File) ReadAt(b []byte, offset int) (n int, err error) {
 	if n < len(b) {
 		err = io.EOF
 	}
-	return
+	return n, err
 }
 
 func (f *File) Write(p []byte) (n int, err error) {
 	n = copy(f.buf[f.off:], p)
 	f.off += n
-	return
+	return n, nil
 }
 
 func (f *File) Save() error {
@@ -168,7 +178,7 @@ func sect2array(sect []byte) (val []uint32, err error) {
 	val = make([]uint32, len(sect)/4)
 	buf := bytes.NewBuffer(sect)
 	err = binary.Read(buf, binary.LittleEndian, &val)
-	return
+	return val, err
 }
 
 func decode_utf16_str(b []uint16) string {
