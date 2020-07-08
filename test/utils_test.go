@@ -2,10 +2,11 @@ package test
 
 import (
 	"testing"
-	"github.com/AlkBur/cfb"
+
+	"github.com/requaos/cfb"
 )
 
-func TestInt(t *testing.T)  {
+func TestInt(t *testing.T) {
 	t.Logf("max uint = %v\n", cfb.MaxUint)
 	t.Logf("min uint = %v\n", cfb.MinUint)
 	t.Logf("max int = %v\n", cfb.MaxInt)

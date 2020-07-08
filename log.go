@@ -1,9 +1,10 @@
 package cfb
 
 import (
-	"github.com/Sirupsen/logrus"
 	"io/ioutil"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 var logger *logrus.Logger

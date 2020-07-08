@@ -1,21 +1,22 @@
 package test
 
 import (
-	"testing"
-	"github.com/AlkBur/cfb"
-	"github.com/stretchr/testify/assert"
-	"os"
-	"io"
 	"bytes"
+	"io"
+	"os"
+	"testing"
+
+	"github.com/requaos/cfb"
+	"github.com/stretchr/testify/assert"
 )
 
 const (
 	non_ole_file = "files/flower.jpg"
-	ole_file = "files/test-ole-file.doc"
-	file_1c = "files/1Cv7.MD"
+	ole_file     = "files/test-ole-file.doc"
+	file_1c      = "files/1Cv7.MD"
 )
 
-func TestIsOlefile(t *testing.T){
+func TestIsOlefile(t *testing.T) {
 	asserts := assert.New(t)
 
 	is_ole, err := cfb.IsOleFile(non_ole_file)
@@ -27,7 +28,7 @@ func TestIsOlefile(t *testing.T){
 	asserts.True(is_ole, ole_file)
 }
 
-func TestExistsWordDocument(t *testing.T){
+func TestExistsWordDocument(t *testing.T) {
 	asserts := assert.New(t)
 
 	ole, err := cfb.NewOleFile(ole_file)
@@ -37,7 +38,7 @@ func TestExistsWordDocument(t *testing.T){
 	ole.Close()
 }
 
-func TestExists1C(t *testing.T){
+func TestExists1C(t *testing.T) {
 	asserts := assert.New(t)
 
 	ole, err := cfb.NewOleFile(file_1c)
@@ -57,7 +58,7 @@ func TestExistsNoVBAMacros(t *testing.T) {
 	ole.Close()
 }
 
-func Test_Get_Type(t *testing.T){
+func Test_Get_Type(t *testing.T) {
 	asserts := assert.New(t)
 
 	ole, err := cfb.NewOleFile(ole_file)
@@ -120,7 +121,6 @@ func Test_Minifat_Writing(t *testing.T) {
 	str_empty := make([]byte, stream.Size())
 	assert.NotEqual(t, str_read, str_empty, "bytes")
 	stream.Close()
-
 
 	err = ole.WriteStream(minifat_stream_name, str_empty)
 	asserts.NoError(err, "ole file: %v", ole_file_copy)
